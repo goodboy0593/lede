@@ -5,16 +5,19 @@
 # Copyright (C) 2019 KFERMercer <KFER.Mercer@gmail.com>
 # 
 # <https://github.com/KFERMercer/OpenWrt-CI>
-# 
+#
 
 name: OpenWrt-CI
 
 on:
-  schedule:
-    - cron: 0 20 * * *
   push:
     branches: 
-      - master
+      - CI-demo
+  #     ↑↑↑ 改成你的分支名, 一般是master
+  # schedule:
+  #   - cron: 0 20 * * *
+  # release:
+  #   types: [published]
 
 jobs:
   build:
@@ -24,7 +27,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
         with:
-          ref: master
+          ref: CI-demo
+        #      ↑↑↑ 改成你的分支名, 一般是master
 
       - name: Initialization environment
         env:
@@ -110,15 +114,15 @@ jobs:
           EOF
 
           # 编译UEFI固件:
-          # cat >> .config <<EOF
-          # CONFIG_EFI_IMAGES=y
-          # EOF
+          cat >> .config <<EOF
+          CONFIG_EFI_IMAGES=y
+          EOF
 
           # IPv6支持:
-          # cat >> .config <<EOF
-          # CONFIG_PACKAGE_dnsmasq_full_dhcpv6=y
-          # CONFIG_PACKAGE_ipv6helper=y
-          # EOF
+          cat >> .config <<EOF
+          CONFIG_PACKAGE_dnsmasq_full_dhcpv6=y
+          CONFIG_PACKAGE_ipv6helper=y
+          EOF
 
           # 多文件系统支持:
           cat >> .config <<EOF
@@ -195,7 +199,7 @@ jobs:
           sed -i 's/^[ \t]*//g' ./.config
           make defconfig
 
-      - name: Make download
+      - name: Download package source code
         run: |
           make download -j8
           find dl -size -1024c -exec ls -l {} \;
@@ -206,16 +210,8 @@ jobs:
           echo -e "$(nproc) thread build."
           make -j$(nproc) V=s
 
-
-      - name: Assemble artifact
-        run: |
-          rm -rf ./artifact/
-          mkdir -p ./artifact/
-          find ./bin/targets/ -name "*combined*img*" | xargs -i mv -f {} ./artifact/
-          find ./bin/targets/ -name "*sysupgrade*bin*" | xargs -i mv -f {} ./artifact/
-
-      - name: Upload artifact
+      - name : Upload artifact
         uses: actions/upload-artifact@master
         with:
           name: OpenWrt firmware
-          path: ./artifact/
+          path: bin/targets
