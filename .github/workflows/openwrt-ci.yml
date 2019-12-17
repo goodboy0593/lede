@@ -178,7 +178,6 @@ jobs:
           CONFIG_PACKAGE_luci-app-aliddns=y
           CONFIG_PACKAGE_luci-app-serverchan=y
           CONFIG_PACKAGE_luci-app-adguardhome=y
-          CONFIG_PACKAGE_luci-app-uhttpd=y
           EOF
 
           # LuCI主题:
