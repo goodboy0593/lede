@@ -10,9 +10,9 @@
 name: OpenWrt-CI
 
 on:
-  push:
-    branches: 
-      - master
+  # push:
+  #   branches: 
+  #     - master
   # schedule:
   #   - cron: 0 20 * * *
   # release:
@@ -64,6 +64,12 @@ jobs:
           git clone https://github.com/Ameykyl/luci-app-koolproxyR.git
           git clone https://github.com/honwen/luci-app-aliddns.git
 
+      - name: 同步最新的源码
+        run: |
+          git remote add openwrt https://github.com/coolsnowwolf/lede.git
+          git pull openwrt master
+          git remote -v
+          
       - name: Update feeds
         run: |
           ./scripts/feeds update -a
