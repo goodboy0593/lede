@@ -158,7 +158,6 @@ jobs:
           CONFIG_PACKAGE_luci-app-mwan3helper=y
           CONFIG_PACKAGE_luci-app-unblockmusic=y
           CONFIG_PACKAGE_luci-app-vsftpd=y
-          CONFIG_PACKAGE_luci-app-uhttpd=y
           EOF
 
           # LuCI主题:
